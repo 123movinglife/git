@@ -1,0 +1,49 @@
+HELP.md
+target/
+*.war
+*.jar
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### 本地配置（含数据库密码，绝不提交）###
+src/main/resources/application.yml
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### 系统与日志 ###
+*.log
+logs/
+.DS_Store
+Thumbs.db
+
+### 个人笔记（不公开）###
+6周路线.md
+服务器部署手册.md
+教师需求调研.md
