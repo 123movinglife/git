@@ -16,6 +16,7 @@ public class Product {
     private String description;
     private BigDecimal price;  //金额永远用BigDecimal,不用double-->容易造成精度丢失
     private String category;
+    private String imageUrl;  //商品主图相对路径,如 /uploads/xxx.jpg
     private Integer status;          //1在售,0下架
     private LocalDateTime createTime;
 

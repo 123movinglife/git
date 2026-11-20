@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>校园二手交易平台 · 商品</title>
+<style>
+  :root{
+    --bg:#0a0f1a; --panel:#131a2b; --line:rgba(56,189,248,.16);
+    --txt:#e6edf7; --muted:#7c8ca6; --cyan:#22d3ee; --violet:#a78bfa;
+    --green:#34d399; --amber:#fbbf24; --red:#f87171;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:"Microsoft YaHei",system-ui,sans-serif;min-height:100vh}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px 20px 60px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--violet));
+        display:grid;place-items:center;font-weight:800;color:#04121a;font-size:18px}
+  .brand h1{font-size:19px}
+  .brand .sub{font-size:11px;color:var(--muted);letter-spacing:2px}
+  .nav{display:flex;gap:10px;align-items:center}
+  .nav a,.nav button{
+    color:var(--muted);text-decoration:none;font-size:13px;background:transparent;
+    border:1px solid var(--line);padding:7px 13px;border-radius:8px;cursor:pointer;
+    font-family:inherit;transition:.2s}
+  .nav a:hover,.nav button:hover{color:var(--cyan);border-color:var(--cyan)}
+  .nav .user{font-size:12px;color:var(--green)}
+
+  .toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+  .toolbar input{
+    flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);
+    color:var(--txt);padding:10px 14px;border-radius:9px;font-size:13px;font-family:inherit;outline:none}
+  .toolbar input:focus{border-color:var(--cyan)}
+  .toolbar select{
+    background:var(--panel);border:1px solid var(--line);color:var(--txt);
+    padding:10px 12px;border-radius:9px;font-size:13px;font-family:inherit;outline:none;cursor:pointer}
+  .toolbar button{
+    background:linear-gradient(135deg,var(--cyan),var(--violet));color:#04121a;font-weight:700;
+    border:none;padding:10px 20px;border-radius:9px;font-size:13px;cursor:pointer;font-family:inherit}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:13px;
+    overflow:hidden;cursor:pointer;transition:.22s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-3px);border-color:rgba(34,211,238,.45);box-shadow:0 8px 24px rgba(34,211,238,.12)}
+  .thumb{width:100%;aspect-ratio:1/1;background:#0d1420;display:grid;place-items:center;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb .noimg{color:#3d4b63;font-size:12px}
+  .info{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px}
+  .title{font-size:14px;font-weight:600;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .meta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .price{color:var(--amber);font-weight:800;font-size:17px;font-family:ui-monospace,Consolas,monospace}
+  .price small{font-size:11px;font-weight:400}
+  .tag{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:2px 8px;border-radius:999px}
+
+  .empty{text-align:center;color:var(--muted);padding:80px 0;font-size:14px}
+  .pager{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:28px;font-size:13px;color:var(--muted)}
+  .pager button{background:var(--panel);border:1px solid var(--line);color:var(--txt);
+                padding:7px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px}
+  .pager button:disabled{opacity:.4;cursor:not-allowed}
+  .pager button:not(:disabled):hover{border-color:var(--cyan);color:var(--cyan)}
+
+  .mask{position:fixed;inset:0;background:rgba(4,8,16,.78);display:none;place-items:center;z-index:10}
+  .mask.show{display:grid}
+  .dialog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 24px;width:320px}
+  .dialog h3{font-size:16px;margin-bottom:14px;color:var(--cyan)}
+  .dialog input{width:100%;background:#0d1420;border:1px solid var(--line);color:var(--txt);
+                padding:10px 12px;border-radius:8px;margin-bottom:10px;font-size:13px;font-family:inherit;outline:none}
+  .dialog input:focus{border-color:var(--cyan)}
+  .dialog .msg{font-size:12px;color:var(--red);min-height:16px;margin-bottom:4px}
+  .dialog .btns{display:flex;gap:10px;margin-top:4px}
+  .dialog .btns button{flex:1;padding:10px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-size:13px}
+  .dialog .ok{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#04121a;font-weight:700}
+  .dialog .cancel{background:transparent;border:1px solid var(--line);color:var(--muted)}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
+         background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.4);color:#a7f3d0;
+         padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.3s;z-index:20}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#fecaca}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">M</div>
+      <div>
+        <h1>校园二手交易平台</h1>
+        <div class="sub">CAMPUS MARKET</div>
+      </div>
+    </div>
+    <div class="nav">
+      <a href="index.html">商品</a>
+      <a href="orders.html">我的订单</a>
+      <a href="dashboard.html">数据看板</a>
+      <span class="user" id="userInfo"></span>
+      <button id="btnLogin">登录</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <input id="keyword" placeholder="搜索商品标题，如：键盘、自行车">
+    <select id="category">
+      <option value="">全部分类</option>
+      <option>数码</option>
+      <option>图书</option>
+      <option>生活用品</option>
+      <option>运动器材</option>
+      <option>交通工具</option>
+    </select>
+    <button id="btnSearch">搜索</button>
+  </div>
+
+  <div class="grid" id="list"></div>
+  <div class="pager">
+    <button id="prev">上一页</button>
+    <span id="pageInfo">第 1 页</span>
+    <button id="next">下一页</button>
+  </div>
+</div>
+
+<div class="mask" id="loginMask">
+  <div class="dialog">
+    <h3>登录</h3>
+    <input id="username" placeholder="用户名（试试 testuser）">
+    <input id="password" type="password" placeholder="密码（试试 123456）">
+    <div class="msg" id="loginMsg"></div>
+    <div class="btns">
+      <button class="cancel" id="btnCancelLogin">取消</button>
+      <button class="ok" id="btnDoLogin">登录</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';
+let page = 1;
+const size = 12;
+let total = 0;
+
+const toastEl = document.getElementById('toast');
+function toast(msg, isErr) {
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => toastEl.className = 'toast', 2500);
+}
+
+function token() {
+  return localStorage.getItem('token') || '';
+}
+
+function refreshNav() {
+  const t = token();
+  const info = document.getElementById('userInfo');
+  const btn = document.getElementById('btnLogin');
+  if (t) {
+    info.textContent = '';
+    btn.textContent = '退出';
+    btn.onclick = () => {
+      localStorage.removeItem('token');
+      refreshNav();
+      toast('已退出登录');
+    };
+  } else {
+    info.textContent = '';
+    btn.textContent = '登录';
+    btn.onclick = () => document.getElementById('loginMask').classList.add('show');
+  }
+}
+
+async function load() {
+  const kw = document.getElementById('keyword').value.trim();
+  const cat = document.getElementById('category').value;
+  let url = `/api/product/list?page=${page}&size=${size}`;
+  if (kw) url += `&keyword=${encodeURIComponent(kw)}`;
+  if (cat) url += `&category=${encodeURIComponent(cat)}`;
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    const data = json.data;
+    total = data.total || 0;
+    render(data.records || []);
+    document.getElementById('pageInfo').textContent =
+      `第 ${data.current} / ${Math.max(1, Math.ceil(total / size))} 页 · 共 ${total} 件`;
+    document.getElementById('prev').disabled = data.current <= 1;
+    document.getElementById('next').disabled = data.current >= Math.ceil(total / size);
+  } catch (e) {
+    toast('加载失败：' + e.message, true);
+  }
+}
+
+function render(items) {
+  const box = document.getElementById('list');
+  if (!items.length) {
+    box.innerHTML = '<div class="empty" style="grid-column:1/-1">没有找到商品</div>';
+    return;
+  }
+  box.innerHTML = items.map(p => {
+    const img = p.imageUrl
+      ? `<img src="${p.imageUrl}" alt="${escapeHtml(p.title)}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:'暂无图片'}))">`
+      : '<div class="noimg">暂无图片</div>';
+    return `
+      <div class="card" onclick="location.href='product.html?id=${p.id}'">
+        <div class="thumb">${img}</div>
+        <div class="info">
+          <div class="title">${escapeHtml(p.title)}</div>
+          <div class="meta">
+            <div class="price"><small>￥</small>${Number(p.price).toFixed(2)}</div>
+            <div class="tag">${escapeHtml(p.category || '未分类')}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+document.getElementById('btnSearch').onclick = () => { page = 1; load(); };
+document.getElementById('keyword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { page = 1; load(); }
+});
+document.getElementById('category').onchange = () => { page = 1; load(); };
+document.getElementById('prev').onclick = () => { if (page > 1) { page--; load(); } };
+document.getElementById('next').onclick = () => { page++; load(); };
+
+document.getElementById('btnCancelLogin').onclick = () => {
+  document.getElementById('loginMask').classList.remove('show');
+};
+document.getElementById('btnDoLogin').onclick = async () => {
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value.trim();
+  const msg = document.getElementById('loginMsg');
+  if (!u || !p) { msg.textContent = '用户名和密码都要填'; return; }
+  try {
+    const res = await fetch('/api/user/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    const json = await res.json();
+    if (json.code !== 200) { msg.textContent = json.message || '登录失败'; return; }
+    localStorage.setItem('token', json.data);
+    document.getElementById('loginMask').classList.remove('show');
+    msg.textContent = '';
+    refreshNav();
+    toast('登录成功');
+  } catch (e) {
+    msg.textContent = '网络错误：' + e.message;
+  }
+};
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btnDoLogin').click();
+});
+
+refreshNav();
+load();
+</script>
+</body>
+</html>

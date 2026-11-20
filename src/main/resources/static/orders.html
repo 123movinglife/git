@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我的订单 · 校园二手交易平台</title>
+<style>
+  :root{
+    --bg:#0a0f1a; --panel:#131a2b; --line:rgba(56,189,248,.16);
+    --txt:#e6edf7; --muted:#7c8ca6; --cyan:#22d3ee; --violet:#a78bfa;
+    --green:#34d399; --amber:#fbbf24; --red:#f87171; --slate:#64748b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:"Microsoft YaHei",system-ui,sans-serif;min-height:100vh}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 20px 60px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--violet));
+        display:grid;place-items:center;font-weight:800;color:#04121a;font-size:18px}
+  .brand h1{font-size:19px}
+  .brand .sub{font-size:11px;color:var(--muted);letter-spacing:2px}
+  .nav{display:flex;gap:10px;align-items:center}
+  .nav a,.nav button{color:var(--muted);text-decoration:none;font-size:13px;background:transparent;
+    border:1px solid var(--line);padding:7px 13px;border-radius:8px;cursor:pointer;font-family:inherit}
+  .nav a:hover,.nav button:hover{color:var(--cyan);border-color:var(--cyan)}
+
+  .tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+  .tabs button{background:transparent;border:1px solid var(--line);color:var(--muted);
+    padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;transition:.2s}
+  .tabs button.on{color:var(--cyan);border-color:var(--cyan);background:rgba(34,211,238,.08)}
+
+  .order{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+         padding:16px 18px;margin-bottom:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .order .pic{width:64px;height:64px;border-radius:9px;background:#0d1420;overflow:hidden;
+              display:grid;place-items:center;flex:none}
+  .order .pic img{width:100%;height:100%;object-fit:cover}
+  .order .pic .ph{color:#3d4b63;font-size:10px}
+  .order .main{flex:1;min-width:180px}
+  .order .name{font-size:15px;font-weight:600;margin-bottom:6px}
+  .order .sub{font-size:12px;color:var(--muted)}
+  .order .side{text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+  .order .amt{font-size:18px;font-weight:800;color:var(--amber);font-family:ui-monospace,Consolas,monospace}
+  .status{font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid}
+  .s0{color:var(--amber);border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.1)}
+  .s1{color:var(--green);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.1)}
+  .s2{color:var(--slate);border-color:rgba(100,116,139,.4);background:rgba(100,116,139,.1)}
+  .s3{color:var(--red);border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.1)}
+  .cancel{background:transparent;border:1px solid rgba(248,113,113,.4);color:#fca5a5;
+          padding:6px 14px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:12px}
+  .cancel:hover{background:rgba(248,113,113,.12)}
+
+  .empty{text-align:center;color:var(--muted);padding:80px 0;font-size:14px}
+  .pager{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:24px;font-size:13px;color:var(--muted)}
+  .pager button{background:var(--panel);border:1px solid var(--line);color:var(--txt);
+                padding:7px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px}
+  .pager button:disabled{opacity:.4;cursor:not-allowed}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
+         background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.4);color:#a7f3d0;
+         padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.3s;z-index:20}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#fecaca}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">M</div>
+      <div>
+        <h1>校园二手交易平台</h1>
+        <div class="sub">CAMPUS MARKET</div>
+      </div>
+    </div>
+    <div class="nav">
+      <a href="index.html">商品</a>
+      <a href="dashboard.html">数据看板</a>
+      <button id="btnLogin">登录</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="on" data-mode="my">我买到的</button>
+    <button data-mode="sales">我卖出的</button>
+  </div>
+
+  <div id="list"></div>
+  <div class="pager">
+    <button id="prev">上一页</button>
+    <span id="pageInfo"></span>
+    <button id="next">下一页</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let mode = 'my';
+let page = 1;
+const size = 8;
+
+const STATUS_MAP = {
+  0: { text: '待支付', cls: 's0' },
+  1: { text: '已支付', cls: 's1' },
+  2: { text: '已取消', cls: 's2' },
+  3: { text: '超时取消', cls: 's3' }
+};
+
+const toastEl = document.getElementById('toast');
+function toast(msg, isErr) {
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => toastEl.className = 'toast', 2500);
+}
+function token() { return localStorage.getItem('token') || ''; }
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function refreshNav() {
+  const btn = document.getElementById('btnLogin');
+  if (token()) {
+    btn.textContent = '退出';
+    btn.onclick = () => { localStorage.removeItem('token'); refreshNav(); location.reload(); };
+  } else {
+    btn.textContent = '登录';
+    btn.onclick = () => { location.href = 'index.html'; };
+  }
+}
+
+async function load() {
+  if (!token()) {
+    document.getElementById('list').innerHTML =
+      '<div class="empty">请先在商品页登录，再查看订单</div>';
+    document.getElementById('pageInfo').textContent = '';
+    document.getElementById('prev').disabled = true;
+    document.getElementById('next').disabled = true;
+    return;
+  }
+  const url = `/api/order/${mode}?page=${page}&size=${size}`;
+  try {
+    const res = await fetch(url, { headers: { 'Authorization': token() } });
+    if (res.status === 401) {
+      document.getElementById('list').innerHTML =
+        '<div class="empty">登录已过期，请重新登录</div>';
+      localStorage.removeItem('token');
+      refreshNav();
+      return;
+    }
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    const data = json.data;
+    render(data.records || []);
+    const pages = Math.max(1, Math.ceil((data.total || 0) / size));
+    document.getElementById('pageInfo').textContent =
+      `第 ${data.current} / ${pages} 页 · 共 ${data.total} 单`;
+    document.getElementById('prev').disabled = data.current <= 1;
+    document.getElementById('next').disabled = data.current >= pages;
+  } catch (e) {
+    toast('加载失败：' + e.message, true);
+  }
+}
+
+function render(items) {
+  const box = document.getElementById('list');
+  if (!items.length) {
+    box.innerHTML = '<div class="empty">还没有订单</div>';
+    return;
+  }
+  box.innerHTML = items.map(o => {
+    const st = STATUS_MAP[o.status] || { text: '未知', cls: 's2' };
+    // order 列表接口只返回订单字段,没有商品图;用标题占位
+    return `
+      <div class="order">
+        <div class="pic"><div class="ph">商品</div></div>
+        <div class="main">
+          <div class="name">${escapeHtml(o.productTitle)}</div>
+          <div class="sub">
+            订单号 ${o.id} · 下单时间 ${(o.createTime || '').replace('T', ' ').slice(0, 16)}
+          </div>
+        </div>
+        <div class="side">
+          <div class="amt">￥${Number(o.amount).toFixed(2)}</div>
+          <div class="status ${st.cls}">${st.text}</div>
+          ${o.status === 0 ? `<button class="cancel" onclick="cancelOrder(${o.id})">取消订单</button>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function cancelOrder(orderId) {
+  if (!confirm('确认取消这个订单？')) return;
+  try {
+    const res = await fetch(`/api/order/${orderId}/cancel`, {
+      method: 'PUT',
+      headers: { 'Authorization': token() }
+    });
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    toast('已取消');
+    load();
+  } catch (e) {
+    toast(e.message, true);
+  }
+}
+
+document.querySelectorAll('.tabs button').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    mode = b.dataset.mode;
+    page = 1;
+    load();
+  };
+});
+document.getElementById('prev').onclick = () => { if (page > 1) { page--; load(); } };
+document.getElementById('next').onclick = () => { page++; load(); };
+
+refreshNav();
+load();
+</script>
+</body>
+</html>

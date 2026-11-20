@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>商品详情 · 校园二手交易平台</title>
+<style>
+  :root{
+    --bg:#0a0f1a; --panel:#131a2b; --line:rgba(56,189,248,.16);
+    --txt:#e6edf7; --muted:#7c8ca6; --cyan:#22d3ee; --violet:#a78bfa;
+    --green:#34d399; --amber:#fbbf24; --red:#f87171;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:"Microsoft YaHei",system-ui,sans-serif;min-height:100vh}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 60px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--violet));
+        display:grid;place-items:center;font-weight:800;color:#04121a;font-size:18px}
+  .brand h1{font-size:19px}
+  .brand .sub{font-size:11px;color:var(--muted);letter-spacing:2px}
+  .nav{display:flex;gap:10px;align-items:center}
+  .nav a,.nav button{color:var(--muted);text-decoration:none;font-size:13px;background:transparent;
+    border:1px solid var(--line);padding:7px 13px;border-radius:8px;cursor:pointer;font-family:inherit}
+  .nav a:hover,.nav button:hover{color:var(--cyan);border-color:var(--cyan)}
+
+  .detail{display:grid;grid-template-columns:420px 1fr;gap:32px}
+  .photo{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+         aspect-ratio:1/1;display:grid;place-items:center}
+  .photo img{width:100%;height:100%;object-fit:cover}
+  .photo .noimg{color:#3d4b63;font-size:14px}
+
+  .info{display:flex;flex-direction:column;gap:16px}
+  .title{font-size:24px;font-weight:700;line-height:1.35}
+  .tags{display:flex;gap:8px;flex-wrap:wrap}
+  .tag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+  .price{font-size:32px;font-weight:800;color:var(--amber);font-family:ui-monospace,Consolas,monospace}
+  .price small{font-size:16px}
+  .desc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+        font-size:14px;line-height:1.9;color:#c3cede;white-space:pre-wrap}
+  .desc .lbl{display:block;font-size:12px;color:var(--muted);margin-bottom:8px;letter-spacing:1px}
+  .actions{display:flex;gap:12px;margin-top:6px}
+  .buy{flex:1;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#04121a;
+       font-weight:800;font-size:15px;border:none;padding:14px;border-radius:10px;cursor:pointer;font-family:inherit}
+  .buy:disabled{opacity:.5;cursor:not-allowed}
+
+  .mask{position:fixed;inset:0;background:rgba(4,8,16,.78);display:none;place-items:center;z-index:10}
+  .mask.show{display:grid}
+  .dialog{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 24px;width:320px}
+  .dialog h3{font-size:16px;margin-bottom:14px;color:var(--cyan)}
+  .dialog input{width:100%;background:#0d1420;border:1px solid var(--line);color:var(--txt);
+                padding:10px 12px;border-radius:8px;margin-bottom:10px;font-size:13px;font-family:inherit;outline:none}
+  .dialog input:focus{border-color:var(--cyan)}
+  .dialog .msg{font-size:12px;color:var(--red);min-height:16px;margin-bottom:4px}
+  .dialog .btns{display:flex;gap:10px}
+  .dialog .btns button{flex:1;padding:10px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;font-size:13px}
+  .dialog .ok{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#04121a;font-weight:700}
+  .dialog .cancel{background:transparent;border:1px solid var(--line);color:var(--muted)}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
+         background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.4);color:#a7f3d0;
+         padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.3s;z-index:20}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err{background:rgba(248,113,113,.15);border-color:rgba(248,113,113,.4);color:#fecaca}
+
+  @media(max-width:820px){ .detail{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">M</div>
+      <div>
+        <h1>校园二手交易平台</h1>
+        <div class="sub">CAMPUS MARKET</div>
+      </div>
+    </div>
+    <div class="nav">
+      <a href="index.html">商品</a>
+      <a href="orders.html">我的订单</a>
+      <a href="dashboard.html">数据看板</a>
+      <button id="btnLogin">登录</button>
+    </div>
+  </header>
+
+  <div class="detail" id="detail">
+    <div class="photo"><div class="noimg">加载中…</div></div>
+    <div class="info">
+      <div class="title">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="mask" id="loginMask">
+  <div class="dialog">
+    <h3>购买前请先登录</h3>
+    <input id="username" placeholder="用户名（试试 testuser）">
+    <input id="password" type="password" placeholder="密码（试试 123456）">
+    <div class="msg" id="loginMsg"></div>
+    <div class="btns">
+      <button class="cancel" id="btnCancelLogin">取消</button>
+      <button class="ok" id="btnDoLogin">登录</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const id = new URLSearchParams(location.search).get('id');
+let product = null;
+
+const toastEl = document.getElementById('toast');
+function toast(msg, isErr) {
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => toastEl.className = 'toast', 2500);
+}
+function token() { return localStorage.getItem('token') || ''; }
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function refreshNav() {
+  const btn = document.getElementById('btnLogin');
+  if (token()) {
+    btn.textContent = '退出';
+    btn.onclick = () => { localStorage.removeItem('token'); refreshNav(); toast('已退出登录'); };
+  } else {
+    btn.textContent = '登录';
+    btn.onclick = () => document.getElementById('loginMask').classList.add('show');
+  }
+}
+
+async function load() {
+  if (!id) { toast('缺少商品 id', true); return; }
+  try {
+    const res = await fetch(`/api/product/${id}`);
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    product = json.data;
+    render(product);
+  } catch (e) {
+    toast('加载失败：' + e.message, true);
+  }
+}
+
+function render(p) {
+  const img = p.imageUrl
+    ? `<img src="${p.imageUrl}" alt="${escapeHtml(p.title)}">`
+    : '<div class="noimg">暂无图片</div>';
+  document.getElementById('detail').innerHTML = `
+    <div class="photo">${img}</div>
+    <div class="info">
+      <div class="title">${escapeHtml(p.title)}</div>
+      <div class="tags">
+        <span class="tag">${escapeHtml(p.category || '未分类')}</span>
+        <span class="tag">${p.status === 1 ? '在售' : '已下架'}</span>
+      </div>
+      <div class="price"><small>￥</small>${Number(p.price).toFixed(2)}</div>
+      <div class="desc">
+        <span class="lbl">商品描述</span>${escapeHtml(p.description || '卖家很懒，什么都没写。')}
+      </div>
+      <div class="actions">
+        <button class="buy" id="btnBuy" ${p.status !== 1 ? 'disabled' : ''}>
+          ${p.status === 1 ? '立即购买' : '该商品已下架'}
+        </button>
+      </div>
+    </div>`;
+  const buy = document.getElementById('btnBuy');
+  if (buy && p.status === 1) buy.onclick = doBuy;
+}
+
+async function doBuy() {
+  if (!token()) {
+    document.getElementById('loginMask').classList.add('show');
+    return;
+  }
+  if (!confirm(`确认购买「${product.title}」？金额 ￥${Number(product.price).toFixed(2)}`)) return;
+  try {
+    const res = await fetch('/api/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': token() },
+      body: JSON.stringify({ productId: product.id })
+    });
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    toast('下单成功，订单号 ' + json.data);
+    setTimeout(() => location.href = 'orders.html', 1200);
+  } catch (e) {
+    if (String(e.message).includes('Failed to fetch') || String(e.message).includes('JSON')) {
+      toast('请先登录', true);
+    } else {
+      toast(e.message, true);
+    }
+  }
+}
+
+document.getElementById('btnCancelLogin').onclick = () => {
+  document.getElementById('loginMask').classList.remove('show');
+};
+document.getElementById('btnDoLogin').onclick = async () => {
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value.trim();
+  const msg = document.getElementById('loginMsg');
+  if (!u || !p) { msg.textContent = '用户名和密码都要填'; return; }
+  try {
+    const res = await fetch('/api/user/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    const json = await res.json();
+    if (json.code !== 200) { msg.textContent = json.message || '登录失败'; return; }
+    localStorage.setItem('token', json.data);
+    document.getElementById('loginMask').classList.remove('show');
+    msg.textContent = '';
+    refreshNav();
+    toast('登录成功，可以购买了');
+  } catch (e) {
+    msg.textContent = '网络错误：' + e.message;
+  }
+};
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btnDoLogin').click();
+});
+
+refreshNav();
+load();
+</script>
+</body>
+</html>

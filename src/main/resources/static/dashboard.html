@@ -88,18 +88,151 @@
 
   footer{margin-top:16px;text-align:center;font-size:11px;color:#4d5b72;letter-spacing:1px}
 
+  /* ============ 顶部导航(视图切换) ============ */
+  .navbar{
+    display:flex;gap:8px;align-items:center;margin-bottom:18px;flex-wrap:wrap;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;
+    backdrop-filter:blur(8px);
+  }
+  .navbar button{
+    background:transparent;border:1px solid transparent;color:var(--muted);
+    padding:9px 18px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;
+    transition:.2s;white-space:nowrap;
+  }
+  .navbar button:hover{color:var(--cyan)}
+  .navbar button.on{
+    color:#04121a;font-weight:700;
+    background:linear-gradient(135deg,var(--cyan),var(--violet));
+    box-shadow:0 0 18px rgba(34,211,238,.35);
+  }
+  .navbar .spacer{flex:1}
+  .navbar .auth{
+    border:1px solid var(--line);color:var(--muted);padding:8px 16px;border-radius:8px;
+    cursor:pointer;font-family:inherit;font-size:13px;background:transparent;
+  }
+  .navbar .auth:hover{color:var(--cyan);border-color:var(--cyan)}
+  .navbar .who{font-size:12px;color:var(--green);padding-right:6px}
+
+  /* 视图容器:同时只有一个可见 */
+  .view{display:none}
+  .view.on{display:block}
+
+  /* ============ 商品网格 ============ */
+  .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+  .toolbar input{
+    flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);
+    color:var(--txt);padding:11px 15px;border-radius:10px;font-size:13px;font-family:inherit;outline:none}
+  .toolbar input:focus{border-color:var(--cyan)}
+  .toolbar select{
+    background:var(--panel);border:1px solid var(--line);color:var(--txt);
+    padding:11px 13px;border-radius:10px;font-size:13px;font-family:inherit;outline:none;cursor:pointer}
+  .toolbar .go{
+    background:linear-gradient(135deg,var(--cyan),var(--violet));color:#04121a;font-weight:700;
+    border:none;padding:11px 22px;border-radius:10px;font-size:13px;cursor:pointer;font-family:inherit}
+
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+  .pcard{
+    background:var(--panel);border:1px solid var(--line);border-radius:13px;
+    overflow:hidden;cursor:pointer;transition:.22s;display:flex;flex-direction:column}
+  .pcard:hover{transform:translateY(-3px);border-color:rgba(34,211,238,.45);
+               box-shadow:0 8px 24px rgba(34,211,238,.12)}
+  .pthumb{width:100%;aspect-ratio:4/3;background:#0d1420;display:grid;place-items:center;overflow:hidden}
+  .pthumb img{width:100%;height:100%;object-fit:cover}
+  .pthumb .noimg{color:#3d4b63;font-size:12px}
+  .pinfo{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px}
+  .ptitle{font-size:14px;font-weight:600;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pmeta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .pprice{color:var(--amber);font-weight:800;font-size:17px;font-family:ui-monospace,Consolas,monospace}
+  .pprice small{font-size:11px;font-weight:400}
+  .ptag{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:2px 8px;border-radius:999px}
+
+  .pager{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:26px;font-size:13px;color:var(--muted)}
+  .pager button{background:var(--panel);border:1px solid var(--line);color:var(--txt);
+                padding:7px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px}
+  .pager button:disabled{opacity:.4;cursor:not-allowed}
+  .pager button:not(:disabled):hover{border-color:var(--cyan);color:var(--cyan)}
+
+  .empty{text-align:center;color:var(--muted);padding:70px 0;font-size:14px}
+
+  /* ============ 商品详情 ============ */
+  .detail{display:grid;grid-template-columns:400px 1fr;gap:30px}
+  .dphoto{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+          overflow:hidden;aspect-ratio:1/1;display:grid;place-items:center}
+  .dphoto img{width:100%;height:100%;object-fit:cover}
+  .dphoto .noimg{color:#3d4b63;font-size:14px}
+  .dinfo{display:flex;flex-direction:column;gap:15px}
+  .dtitle{font-size:24px;font-weight:700;line-height:1.35}
+  .dtags{display:flex;gap:8px;flex-wrap:wrap}
+  .dtag{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:4px 11px;border-radius:999px}
+  .dprice{font-size:32px;font-weight:800;color:var(--amber);font-family:ui-monospace,Consolas,monospace}
+  .dprice small{font-size:16px}
+  .ddesc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+         font-size:14px;line-height:1.9;color:#c3cede;white-space:pre-wrap}
+  .ddesc .lbl{display:block;font-size:12px;color:var(--muted);margin-bottom:8px;letter-spacing:1px}
+  .dact{display:flex;gap:12px;margin-top:4px}
+  .buy{flex:1;background:linear-gradient(135deg,var(--cyan),var(--violet));color:#04121a;
+       font-weight:800;font-size:15px;border:none;padding:14px;border-radius:10px;cursor:pointer;font-family:inherit}
+  .buy:disabled{opacity:.5;cursor:not-allowed}
+  .back{background:transparent;border:1px solid var(--line);color:var(--muted);
+        padding:14px 20px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px}
+  .back:hover{color:var(--cyan);border-color:var(--cyan)}
+
+  /* ============ 订单 ============ */
+  .otabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .otabs button{background:transparent;border:1px solid var(--line);color:var(--muted);
+    padding:8px 17px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;transition:.2s}
+  .otabs button.on{color:var(--cyan);border-color:var(--cyan);background:rgba(34,211,238,.08)}
+
+  .order{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+         padding:16px 18px;margin-bottom:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .order .opg{width:62px;height:62px;border-radius:9px;background:#0d1420;overflow:hidden;
+              display:grid;place-items:center;flex:none}
+  .order .opg img{width:100%;height:100%;object-fit:cover}
+  .order .opg .ph{color:#3d4b63;font-size:10px}
+  .order .omain{flex:1;min-width:170px}
+  .order .oname{font-size:15px;font-weight:600;margin-bottom:6px}
+  .order .osub{font-size:12px;color:var(--muted)}
+  .order .oside{text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+  .order .oamt{font-size:18px;font-weight:800;color:var(--amber);font-family:ui-monospace,Consolas,monospace}
+  .st{font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid}
+  .s0{color:var(--amber);border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.1)}
+  .s1{color:var(--green);border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.1)}
+  .s2{color:var(--slate);border-color:rgba(100,116,139,.4);background:rgba(100,116,139,.1)}
+  .s3{color:var(--red);border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.1)}
+  .ocancel{background:transparent;border:1px solid rgba(248,113,113,.4);color:#fca5a5;
+           padding:6px 14px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:12px}
+  .ocancel:hover{background:rgba(248,113,113,.12)}
+
+  /* ============ 登录弹窗 ============ */
+  .mask{position:fixed;inset:0;background:rgba(4,8,16,.78);display:none;place-items:center;z-index:20}
+  .mask.show{display:grid}
+  .dialog{background:#131a2b;border:1px solid var(--line);border-radius:14px;padding:26px 24px;width:330px}
+  .dialog h3{font-size:16px;margin-bottom:14px;color:var(--cyan)}
+  .dialog input{width:100%;background:#0d1420;border:1px solid var(--line);color:var(--txt);
+                padding:10px 12px;border-radius:8px;margin-bottom:10px;font-size:13px;
+                font-family:inherit;outline:none}
+  .dialog input:focus{border-color:var(--cyan)}
+  .dialog .dmsg{font-size:12px;color:var(--red);min-height:16px;margin-bottom:4px}
+  .dialog .dbtns{display:flex;gap:10px}
+  .dialog .dbtns button{flex:1;padding:10px;border-radius:8px;border:none;cursor:pointer;
+                        font-family:inherit;font-size:13px}
+  .dialog .ok{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#04121a;font-weight:700}
+  .dialog .cancel{background:transparent;border:1px solid var(--line);color:var(--muted)}
+
   /* 加载/错误提示 */
   .toast{
     position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
     background:rgba(248,113,113,.14);border:1px solid rgba(248,113,113,.4);color:#fecaca;
-    padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.3s;z-index:9;
+    padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.3s;z-index:30;
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.ok{background:rgba(52,211,153,.15);border-color:rgba(52,211,153,.4);color:#a7f3d0}
 
   @media (max-width:1100px){
     .kpis{grid-template-columns:repeat(2,1fr)}
     .grid{grid-template-columns:1fr}
     .clock{display:none}
+    .detail{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -118,6 +251,20 @@
       <div class="clock" id="clock">--:--:--</div>
     </div>
   </header>
+
+  <!-- 视图导航 -->
+  <nav class="navbar">
+    <button class="on" data-view="dash">数据看板</button>
+    <button data-view="shop">商品列表</button>
+    <button data-view="detail">商品详情</button>
+    <button data-view="orders">我的订单</button>
+    <div class="spacer"></div>
+    <span class="who" id="who"></span>
+    <button class="auth" id="btnAuth">登录</button>
+  </nav>
+
+  <!-- ===== 视图 1: 数据看板 ===== -->
+  <div class="view on" id="view-dash">
 
   <section class="kpis">
     <div class="kpi" style="--accent:var(--cyan)">
@@ -172,7 +319,67 @@
     </div>
   </section>
 
+  </div><!-- /view-dash -->
+
+  <!-- ===== 视图 2: 商品列表 ===== -->
+  <div class="view" id="view-shop">
+    <div class="toolbar">
+      <input id="kw" placeholder="搜索商品标题，如：键盘、自行车">
+      <select id="cat">
+        <option value="">全部分类</option>
+        <option>数码</option>
+        <option>图书</option>
+        <option>生活用品</option>
+        <option>运动器材</option>
+        <option>交通工具</option>
+      </select>
+      <button class="go" id="btnSearch">搜索</button>
+    </div>
+    <div class="pgrid" id="plist"></div>
+    <div class="pager">
+      <button id="pPrev">上一页</button>
+      <span id="pInfo"></span>
+      <button id="pNext">下一页</button>
+    </div>
+  </div>
+
+  <!-- ===== 视图 3: 商品详情 ===== -->
+  <div class="view" id="view-detail">
+    <div class="detail" id="detailBox">
+      <div class="dphoto"><div class="noimg">请在商品列表中选择一件商品</div></div>
+      <div class="dinfo"><div class="dtitle">—</div></div>
+    </div>
+  </div>
+
+  <!-- ===== 视图 4: 我的订单 ===== -->
+  <div class="view" id="view-orders">
+    <div class="otabs">
+      <button class="on" data-mode="my">我买到的</button>
+      <button data-mode="sales">我卖出的</button>
+    </div>
+    <div id="olist"></div>
+    <div class="pager">
+      <button id="oPrev">上一页</button>
+      <span id="oInfo"></span>
+      <button id="oNext">下一页</button>
+    </div>
+  </div>
+
   <footer>数据来自 campus_market 数据库 · 每 5 秒自动刷新 · Spring Boot + MySQL + ECharts</footer>
+</div>
+
+<!-- 登录弹窗 -->
+<div class="mask" id="loginMask">
+  <div class="dialog">
+    <h3>登录</h3>
+    <input id="inUser" placeholder="用户名（试试 testuser）">
+    <input id="inPass" type="password" placeholder="密码（试试 123456）">
+    <div class="dmsg" id="dMsg"></div>
+    <div class="dbtns">
+      <button class="cancel" id="btnCancelLogin">取消</button>
+      <button class="ok" id="btnDoLogin">登录</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -388,11 +595,326 @@ function tick(){
     `${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
 }
 
+/* ============================================================
+   单页面视图切换 + 商城功能
+   ============================================================ */
+function token(){ return localStorage.getItem('token') || ''; }
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function toastMsg(msg, ok){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (ok ? ' ok' : '');
+  setTimeout(() => t.className = 'toast', 2500);
+}
+
+let currentView = 'dash';
+let shopPage = 1, shopSize = 12, shopTotal = 0;
+let orderMode = 'my', orderPage = 1, orderSize = 8;
+let currentProduct = null;
+
+/* ---------- 切换视图 ---------- */
+function switchView(name){
+  currentView = name;
+  document.querySelectorAll('.navbar button[data-view]').forEach(b => {
+    b.classList.toggle('on', b.dataset.view === name);
+  });
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  const box = document.getElementById('view-' + name);
+  if (box) box.classList.add('on');
+  // 图表在隐藏状态下尺寸为0,切回来要重绘
+  if (name === 'dash') {
+    setTimeout(() => Object.values(charts).forEach(c => c.resize()), 60);
+  }
+  if (name === 'shop' && !document.getElementById('plist').innerHTML) loadShop();
+  if (name === 'orders' && !document.getElementById('olist').innerHTML) loadOrders();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+document.querySelectorAll('.navbar button[data-view]').forEach(b => {
+  b.onclick = () => switchView(b.dataset.view);
+});
+
+/* ---------- 登录态 ---------- */
+function refreshAuth(){
+  const who = document.getElementById('who');
+  const btn = document.getElementById('btnAuth');
+  if (token()) {
+    who.textContent = '已登录';
+    btn.textContent = '退出';
+    btn.onclick = () => {
+      localStorage.removeItem('token');
+      refreshAuth();
+      document.getElementById('olist').innerHTML = '';
+      toastMsg('已退出登录', true);
+    };
+  } else {
+    who.textContent = '';
+    btn.textContent = '登录';
+    btn.onclick = () => {
+      document.getElementById('dMsg').textContent = '';
+      document.getElementById('loginMask').classList.add('show');
+    };
+  }
+}
+document.getElementById('btnCancelLogin').onclick = () => {
+  document.getElementById('loginMask').classList.remove('show');
+};
+document.getElementById('btnDoLogin').onclick = async () => {
+  const u = document.getElementById('inUser').value.trim();
+  const p = document.getElementById('inPass').value.trim();
+  const msg = document.getElementById('dMsg');
+  if (!u || !p) { msg.textContent = '用户名和密码都要填'; return; }
+  try {
+    const res = await fetch('/api/user/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    const json = await res.json();
+    if (json.code !== 200) { msg.textContent = json.message || '登录失败'; return; }
+    localStorage.setItem('token', json.data);
+    document.getElementById('loginMask').classList.remove('show');
+    refreshAuth();
+    toastMsg('登录成功', true);
+    if (currentView === 'orders') loadOrders();
+  } catch (e) {
+    msg.textContent = '网络错误：' + e.message;
+  }
+};
+document.getElementById('inPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btnDoLogin').click();
+});
+
+/* ---------- 商品列表 ---------- */
+async function loadShop(){
+  const kw = document.getElementById('kw').value.trim();
+  const cat = document.getElementById('cat').value;
+  let url = `/api/product/list?page=${shopPage}&size=${shopSize}`;
+  if (kw) url += `&keyword=${encodeURIComponent(kw)}`;
+  if (cat) url += `&category=${encodeURIComponent(cat)}`;
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    const d = json.data;
+    shopTotal = d.total || 0;
+    renderShop(d.records || []);
+    const pages = Math.max(1, Math.ceil(shopTotal / shopSize));
+    document.getElementById('pInfo').textContent =
+      `第 ${d.current} / ${pages} 页 · 共 ${shopTotal} 件`;
+    document.getElementById('pPrev').disabled = d.current <= 1;
+    document.getElementById('pNext').disabled = d.current >= pages;
+  } catch (e) {
+    toastMsg('商品加载失败：' + e.message);
+  }
+}
+
+function renderShop(items){
+  const box = document.getElementById('plist');
+  if (!items.length) {
+    box.innerHTML = '<div class="empty" style="grid-column:1/-1">没有找到商品</div>';
+    return;
+  }
+  box.innerHTML = items.map(p => {
+    const thumb = p.imageUrl
+      ? `<img src="${esc(p.imageUrl)}" alt="${esc(p.title)}" onerror="this.parentNode.innerHTML='<div class=&quot;noimg&quot;>暂无图片</div>'">`
+      : '<div class="noimg">暂无图片</div>';
+    return `
+      <div class="pcard" data-id="${p.id}">
+        <div class="pthumb">${thumb}</div>
+        <div class="pinfo">
+          <div class="ptitle">${esc(p.title)}</div>
+          <div class="pmeta">
+            <div class="pprice"><small>￥</small>${Number(p.price).toFixed(2)}</div>
+            <div class="ptag">${esc(p.category || '未分类')}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  box.querySelectorAll('.pcard').forEach(c => {
+    c.onclick = () => openDetail(Number(c.dataset.id));
+  });
+}
+
+document.getElementById('btnSearch').onclick = () => { shopPage = 1; loadShop(); };
+document.getElementById('kw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { shopPage = 1; loadShop(); }
+});
+document.getElementById('cat').onchange = () => { shopPage = 1; loadShop(); };
+document.getElementById('pPrev').onclick = () => { if (shopPage > 1) { shopPage--; loadShop(); } };
+document.getElementById('pNext').onclick = () => { shopPage++; loadShop(); };
+
+/* ---------- 商品详情 ---------- */
+async function openDetail(id){
+  switchView('detail');
+  const box = document.getElementById('detailBox');
+  box.innerHTML = '<div class="dphoto"><div class="noimg">加载中…</div></div><div class="dinfo"><div class="dtitle">—</div></div>';
+  try {
+    const res = await fetch(`/api/product/${id}`);
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    currentProduct = json.data;
+    renderDetail(currentProduct);
+  } catch (e) {
+    toastMsg('详情加载失败：' + e.message);
+  }
+}
+
+function renderDetail(p){
+  const img = p.imageUrl
+    ? `<img src="${esc(p.imageUrl)}" alt="${esc(p.title)}">`
+    : '<div class="noimg">暂无图片</div>';
+  document.getElementById('detailBox').innerHTML = `
+    <div class="dphoto">${img}</div>
+    <div class="dinfo">
+      <div class="dtitle">${esc(p.title)}</div>
+      <div class="dtags">
+        <span class="dtag">${esc(p.category || '未分类')}</span>
+        <span class="dtag">${p.status === 1 ? '在售' : '已下架'}</span>
+      </div>
+      <div class="dprice"><small>￥</small>${Number(p.price).toFixed(2)}</div>
+      <div class="ddesc"><span class="lbl">商品描述</span>${esc(p.description || '卖家很懒，什么都没写。')}</div>
+      <div class="dact">
+        <button class="back" id="btnBackShop">返回列表</button>
+        <button class="buy" id="btnBuy" ${p.status !== 1 ? 'disabled' : ''}>
+          ${p.status === 1 ? '立即购买' : '该商品已下架'}
+        </button>
+      </div>
+    </div>`;
+  document.getElementById('btnBackShop').onclick = () => switchView('shop');
+  const buy = document.getElementById('btnBuy');
+  if (buy && p.status === 1) buy.onclick = doBuy;
+}
+
+async function doBuy(){
+  if (!token()) {
+    document.getElementById('dMsg').textContent = '';
+    document.getElementById('loginMask').classList.add('show');
+    return;
+  }
+  if (!confirm(`确认购买「${currentProduct.title}」？金额 ￥${Number(currentProduct.price).toFixed(2)}`)) return;
+  try {
+    const res = await fetch('/api/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': token() },
+      body: JSON.stringify({ productId: currentProduct.id })
+    });
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    toastMsg('下单成功，订单号 ' + json.data, true);
+    document.getElementById('olist').innerHTML = '';
+    setTimeout(() => switchView('orders'), 1000);
+  } catch (e) {
+    toastMsg(e.message);
+  }
+}
+
+/* ---------- 我的订单 ---------- */
+async function loadOrders(){
+  const box = document.getElementById('olist');
+  if (!token()) {
+    box.innerHTML = '<div class="empty">请先登录，再查看订单</div>';
+    document.getElementById('oInfo').textContent = '';
+    document.getElementById('oPrev').disabled = true;
+    document.getElementById('oNext').disabled = true;
+    return;
+  }
+  try {
+    const res = await fetch(`/api/order/${orderMode}?page=${orderPage}&size=${orderSize}`,
+      { headers: { 'Authorization': token() } });
+    if (res.status === 401) {
+      box.innerHTML = '<div class="empty">登录已过期，请重新登录</div>';
+      localStorage.removeItem('token');
+      refreshAuth();
+      return;
+    }
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    const d = json.data;
+    renderOrders(d.records || []);
+    const pages = Math.max(1, Math.ceil((d.total || 0) / orderSize));
+    document.getElementById('oInfo').textContent = `第 ${d.current} / ${pages} 页 · 共 ${d.total} 单`;
+    document.getElementById('oPrev').disabled = d.current <= 1;
+    document.getElementById('oNext').disabled = d.current >= pages;
+  } catch (e) {
+    toastMsg('订单加载失败：' + e.message);
+  }
+}
+
+const ORDER_STATUS = {
+  0: {t:'待支付', c:'s0'},
+  1: {t:'已支付', c:'s1'},
+  2: {t:'已取消', c:'s2'},
+  3: {t:'超时取消', c:'s3'}
+};
+
+function renderOrders(items){
+  const box = document.getElementById('olist');
+  if (!items.length) {
+    box.innerHTML = '<div class="empty">还没有订单</div>';
+    return;
+  }
+  box.innerHTML = items.map(o => {
+    const st = ORDER_STATUS[o.status] || {t:'未知', c:'s2'};
+    const time = (o.createTime || '').replace('T',' ').slice(0,16);
+    return `
+      <div class="order">
+        <div class="opg"><div class="ph">商品</div></div>
+        <div class="omain">
+          <div class="oname">${esc(o.productTitle)}</div>
+          <div class="osub">订单号 ${o.id} · ${time}</div>
+        </div>
+        <div class="oside">
+          <div class="oamt">￥${Number(o.amount).toFixed(2)}</div>
+          <div class="st ${st.c}">${st.t}</div>
+          ${o.status === 0 ? `<button class="ocancel" data-oid="${o.id}">取消订单</button>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+  box.querySelectorAll('.ocancel').forEach(b => {
+    b.onclick = () => cancelOrder(Number(b.dataset.oid));
+  });
+}
+
+async function cancelOrder(orderId){
+  if (!confirm('确认取消这个订单？')) return;
+  try {
+    const res = await fetch(`/api/order/${orderId}/cancel`, {
+      method: 'PUT',
+      headers: { 'Authorization': token() }
+    });
+    const json = await res.json();
+    if (json.code !== 200) throw new Error(json.message);
+    toastMsg('已取消', true);
+    loadOrders();
+  } catch (e) {
+    toastMsg(e.message);
+  }
+}
+
+document.querySelectorAll('.otabs button').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.otabs button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    orderMode = b.dataset.mode;
+    orderPage = 1;
+    loadOrders();
+  };
+});
+document.getElementById('oPrev').onclick = () => { if (orderPage > 1) { orderPage--; loadOrders(); } };
+document.getElementById('oNext').onclick = () => { orderPage++; loadOrders(); };
+
 window.addEventListener('DOMContentLoaded', () => {
   if (!window.echarts){ showError('ECharts 加载失败，请检查网络（CDN）'); return; }
   ['chart-status','chart-category','chart-trend','chart-top'].forEach(initChart);
   tick(); setInterval(tick, 1000);
   load(); setInterval(load, 5000);
+  refreshAuth();
+  loadShop();   // 预加载商品列表,切视图时无等待
 
   let rt;
   window.addEventListener('resize', () => {
